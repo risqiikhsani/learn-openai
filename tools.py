@@ -39,19 +39,39 @@ completion = client.chat.completions.create(
 
 # execute function code
 
-tool_call = completion.choices[0].message.tool_calls[0]
-args = json.loads(tool_call.function.arguments)
+# tool_call = completion.choices[0].message.tool_calls[0]
+# args = json.loads(tool_call.function.arguments)
 
-result = get_weather(args["latitude"], args["longitude"])
+# result = get_weather(args["latitude"], args["longitude"])
 
-# supply models with result
+# # supply models with result
 
-messages.append(completion.choices[0].message)  # append model's function call message
-messages.append({                               # append result message
-    "role": "tool",
-    "tool_call_id": tool_call.id,
-    "content": str(result)
-})
+# messages.append(completion.choices[0].message)  # append model's function call message
+# messages.append({                               # append result message
+#     "role": "tool",
+#     "tool_call_id": tool_call.id,
+#     "content": str(result)
+# })
+
+# When the model calls a function, you must execute it and return the result. Since model responses can include zero, one, or multiple calls, it is best practice to assume there are several.
+
+def call_function(name, args):
+    if name == "get_weather":
+        return get_weather(**args)
+    # if name == "send_email":
+    #     return send_email(**args)
+    
+messages.append(completion.choices[0].message)  # append model's function call message    
+for tool_call in completion.choices[0].message.tool_calls:
+    name = tool_call.function.name
+    args = json.loads(tool_call.function.arguments)
+
+    result = call_function(name, args)
+    messages.append({
+        "role": "tool",
+        "tool_call_id": tool_call.id,
+        "content": str(result)
+    })
 
 completion_2 = client.chat.completions.create(
     model="gpt-4o",
