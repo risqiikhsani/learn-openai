@@ -1,0 +1,12 @@
+name = risqi ikhsani
+gender = male
+married = no
+nickname = hypernova
+age = 25
+hobbies = walking in nature, cats, fishing, a little bit gaming
+favorite foods = seafoods
+favorite drinks = alvocado juice
+favorite places = nature, sea, beautiful woods
+pet = cats
+location = yogyakarta, Indonesia
+
